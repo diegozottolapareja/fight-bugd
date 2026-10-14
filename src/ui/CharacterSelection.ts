@@ -1,3 +1,4 @@
+import { PLAYER1_NAME, getPlayer2Name } from '../game/players';
 import type { AudioManager } from '../audio/AudioManager';
 import { CHARACTERS, type CharacterStats } from '../characters/characterDefinitions';
 import { esc, html } from './dom';
@@ -60,7 +61,7 @@ export function showCharacterSelection(root: HTMLElement, opts: SelectionOptions
     const p = picks.length;
     badge.className = `badge p${p + 1}`;
     badge.textContent = `J${p + 1}`;
-    title.textContent = opts.players === 1 ? 'Elegí tu monstruito' : `Jugador ${p + 1}: elegí tu monstruito`;
+    title.textContent = opts.players === 1 ? 'Elegí tu monstruito' : `${p === 0 ? PLAYER1_NAME : getPlayer2Name()}: elegí tu monstruito`;
     cardEls.forEach((c, i) => {
       c.classList.toggle('active', i === cursor);
       c.setAttribute('aria-selected', String(i === cursor));

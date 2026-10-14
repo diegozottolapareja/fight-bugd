@@ -1,10 +1,10 @@
 import { esc, html } from './dom';
 
 /** Cuenta regresiva con el VS arriba. */
-export function showReady(root: HTMLElement, names: [string, string], labels: [string, string]) {
+export function showReady(root: HTMLElement, names: [string, string], labels: [string, string], cpu = false) {
   const el = html(`
     <section class="screen ready" aria-live="assertive">
-      <div class="vs"><span class="badge p1">${esc(labels[0])}</span>${esc(names[0])}<span class="x">VS</span>${esc(names[1])}<span class="badge p2 ${labels[1] === 'CPU' ? 'cpu' : ''}">${esc(labels[1])}</span></div>
+      <div class="vs"><span class="badge p1">${esc(labels[0])}</span>${esc(names[0])}<span class="x">VS</span>${esc(names[1])}<span class="badge p2 ${cpu ? 'cpu' : ''}">${esc(labels[1])}</span></div>
       <div class="count"></div>
     </section>`);
   root.appendChild(el);

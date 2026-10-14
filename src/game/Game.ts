@@ -13,6 +13,7 @@ import { BattleController, type BattleEvent, type BattleMode } from './BattleCon
 import { CpuController } from './CpuController';
 import { BATTLE_CONFIG } from './GameConfig';
 import { GameStateMachine } from './GameState';
+import { CPU_NAME, PLAYER1_NAME, getPlayer2Name } from './players';
 
 /** ?turnos=1 fuerza 2J por turnos; ?turnos=0 fuerza teclado. */
 const params = new URLSearchParams(location.search);
@@ -28,7 +29,7 @@ export class Game {
   private closeScreen: (() => void) | null = null;
   private keyboard = new KeyboardInput(KEYMAP_1P);
   private match: { players: 1 | 2; ids: [string, string] } | null = null;
-  private labels: [string, string] = ['J1', 'CPU'];
+  private labels: [string, string] = [PLAYER1_NAME, CPU_NAME];
   private lastFrame = performance.now();
   private resultTimer = 0;
   private timers: number[] = [];
@@ -156,7 +157,7 @@ export class Game {
     const token = ++this.token;
     const { players, ids } = this.match;
     const defs: [CharacterDefinition, CharacterDefinition] = [getCharacter(ids[0]), getCharacter(ids[1])];
-    this.labels = players === 1 ? ['J1', 'CPU'] : ['J1', 'J2'];
+    this.labels = players === 1 ? [PLAYER1_NAME, CPU_NAME] : [PLAYER1_NAME, getPlayer2Name()];
     this.keyboard = new KeyboardInput(players === 1 ? KEYMAP_1P : KEYMAP_2P);
     const battle = await BattleController.create({ characters: defs, mode: this.battleMode(players), seed: Math.floor(Math.random() * 100000) });
     if (token !== this.token) return battle.dispose();
@@ -179,7 +180,7 @@ export class Game {
       label: this.labels[i],
       name: battle.spinners[i].def.name,
       sprite: battle.spinners[i].def.visual.sprite,
-      cpu: this.labels[i] === 'CPU',
+      cpu: this.match?.players === 1 && i === 1,
       key: i === 0 ? 'Space' : 'KeyL',
     }));
     this.swapScreen(showLaunch(this.ui, { launchers, touch: this.touch, audio: this.audio, onDone: (p) => this.countdown(p) }));
@@ -187,7 +188,7 @@ export class Game {
 
   private countdown(powers: [number, number]): void {
     const battle = this.battle!;
-    const overlay = showReady(this.ui, [battle.spinners[0].def.name, battle.spinners[1].def.name], this.labels);
+    const overlay = showReady(this.ui, [battle.spinners[0].def.name, battle.spinners[1].def.name], this.labels, this.match?.players === 1);
     this.swapScreen(() => overlay.close());
     const step = BATTLE_CONFIG.countdownStepMs;
     ['3', '2', '1'].forEach((n, i) =>
@@ -223,7 +224,7 @@ export class Game {
       onPress: (p) => this.humanPress(p),
       onQuit: () => this.goMenu(),
     });
-    if (this.battle.turns) this.hud.announce('¡Turno de J1!', 0);
+    if (this.battle.turns) this.hud.announce(`¡Turno de ${this.labels[0]}!`, 0);
   }
 
   private onBattleEvent(e: BattleEvent): void {
@@ -260,12 +261,15 @@ export class Game {
     this.state.go('RESULT');
     this.hud?.destroy();
     this.hud = null;
-    this.audio.victory();
+    const vsCpu = this.match?.players === 1;
+    if (vsCpu && battle.result?.winner === 1) this.audio.defeat();
+    else this.audio.victory();
     this.swapScreen(
       showResults(this.ui, {
         result: battle.result,
         defs: [battle.spinners[0].def, battle.spinners[1].def],
         labels: this.labels,
+        vsCpu,
         audio: this.audio,
         onRematch: () => {
           battle.reset();

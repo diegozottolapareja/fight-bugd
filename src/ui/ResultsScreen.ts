@@ -15,6 +15,8 @@ export interface ResultOptions {
   result: VictoryResult;
   defs: [CharacterDefinition, CharacterDefinition];
   labels: [string, string];
+  /** Se juega contra la computadora: el resultado se muestra como ganaste / perdiste. */
+  vsCpu: boolean;
   audio: AudioManager;
   onRematch(): void;
   onSelect(): void;
@@ -25,7 +27,8 @@ export function showResults(root: HTMLElement, o: ResultOptions): () => void {
   const ac = new AbortController();
   const w = o.result.winner;
   const def = w === null ? null : o.defs[w];
-  const who = w === null ? '' : o.labels[w] === 'CPU' ? 'La CPU' : `Jugador ${w + 1}`;
+  const who = w === null ? '' : '¡ganó!';
+  const verdict = o.vsCpu && w !== null ? (w === 0 ? 'win' : 'lose') : null;
   const colors = ['#ff5a4e', '#ffc93c', '#2fc0ff', '#fff6e0', '#9cff5a'];
   const confetti = Array.from(
     { length: 40 },
@@ -34,7 +37,8 @@ export function showResults(root: HTMLElement, o: ResultOptions): () => void {
   ).join('');
   const el = html(`
     <section class="screen result" aria-label="Resultado">
-      <div class="confetti">${confetti}</div>
+      ${verdict !== 'lose' ? `<div class="confetti">${confetti}</div>` : ''}
+      ${verdict ? `<div class="verdict ${verdict}">${verdict === 'win' ? '¡GANASTE!' : '¡PERDISTE!'}</div>` : ''}
       <div class="vtype">${esc(VICTORY_TEXT[o.result.type])}</div>
       ${def ? `<img src="${def.visual.sprite}" alt="" />` : ''}
       <div class="winner">${def ? `¡Ganó ${esc(def.name)}!` : '¡Nadie gana!'}</div>

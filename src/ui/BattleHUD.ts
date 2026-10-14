@@ -33,7 +33,7 @@ export class BattleHUD {
       const panel = html(`
         <div class="panel ${i === 0 ? 'left' : 'right'} p${i + 1}">
           <div class="row">
-            <span class="badge p${i + 1} ${labels[i] === 'CPU' ? 'cpu' : ''}">${esc(labels[i])}</span>
+            <span class="badge p${i + 1} ${battle.setup.mode === 'cpu' && i === 1 ? 'cpu' : ''}">${esc(labels[i])}</span>
             <span class="pname">${esc(s.def.name)}</span>
             ${key && !opts.touch ? `<span class="keycap">${key}</span>` : ''}
           </div>
@@ -60,11 +60,11 @@ export class BattleHUD {
     }
 
     if (opts.touch || mode === 'cpu') {
-      this.spinBtn = html<HTMLButtonElement>(`<button class="spin-btn p1" aria-label="Girar">¡GIRA!<small>Jugador 1</small></button>`);
+      this.spinBtn = html<HTMLButtonElement>(`<button class="spin-btn p1" aria-label="Girar">¡GIRA!<small>${esc(labels[0])}</small></button>`);
       this.el.appendChild(this.spinBtn);
       this.unbind.push(bindPressButton(this.spinBtn, () => opts.onPress(battle.turns ? battle.turns.activePlayer : 0)));
     } else {
-      this.el.appendChild(html(`<p class="hint keys-hint">Jugador 1: <kbd>Espacio</kbd> &nbsp; Jugador 2: <kbd>L</kbd></p>`));
+      this.el.appendChild(html(`<p class="hint keys-hint">${esc(labels[0])}: <kbd>Espacio</kbd> &nbsp; ${esc(labels[1])}: <kbd>L</kbd></p>`));
     }
 
     const quit = html<HTMLButtonElement>(`<button class="icon-btn quit" aria-label="Salir al menú">✕ Salir</button>`);
@@ -117,7 +117,7 @@ export class BattleHUD {
       const key = `${p}-${b.turns.inTransition}`;
       if (key !== this.last.turn) {
         this.last.turn = key;
-        this.turnBanner.querySelector('.ttext')!.textContent = b.turns.inTransition ? `¡Ahora J${p + 1}!` : `Turno de J${p + 1}`;
+        this.turnBanner.querySelector('.ttext')!.textContent = b.turns.inTransition ? `¡Ahora ${this.opts.labels[p]}!` : `Turno de ${this.opts.labels[p]}`;
         this.turnBanner.style.background = p === 0 ? 'var(--p1)' : 'var(--p2)';
         this.turnBanner.style.color = p === 0 ? '#fff' : 'var(--ink)';
         this.panels.forEach((panel, i) => {
@@ -126,7 +126,7 @@ export class BattleHUD {
         });
         if (this.spinBtn) {
           this.spinBtn.className = `spin-btn p${p + 1} ${b.turns.inTransition ? 'wait' : ''}`;
-          this.spinBtn.innerHTML = `${b.turns.inTransition ? '¡LISTO!' : '¡GIRA!'}<small>Jugador ${p + 1}</small>`;
+          this.spinBtn.innerHTML = `${b.turns.inTransition ? '¡LISTO!' : '¡GIRA!'}<small>${esc(this.opts.labels[p])}</small>`;
         }
       }
       this.turnBanner.querySelector<HTMLElement>('.tbar i')!.style.width = `${b.turns.windowProgress * 100}%`;

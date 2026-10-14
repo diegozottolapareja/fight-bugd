@@ -163,6 +163,13 @@ export class AudioManager {
     this.tone(300, 0.6, 'sawtooth', 0.15, 60);
   }
 
+  /** Sonido feo de derrota: notas que caen y desafinan. */
+  defeat(): void {
+    [392, 330, 277, 196].forEach((f, i) => this.tone(f, 0.32, 'sawtooth', 0.2, f * 0.82, i * 0.22));
+    this.tone(70, 0.9, 'square', 0.22, 40, 0.8);
+    this.tone(95, 0.9, 'sawtooth', 0.14, 50, 0.8);
+  }
+
   victory(): void {
     [523, 659, 784, 659, 784, 1047].forEach((f, i) => this.tone(f, 0.2, 'square', 0.16, undefined, i * 0.13));
   }
