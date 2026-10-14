@@ -13,7 +13,7 @@ export function showMainMenu(root: HTMLElement, opts: { audio: AudioManager; onP
       </div>
       <label class="p2-name">Jugador 2 <input type="text" maxlength="12" value="${esc(getPlayer2Name())}" aria-label="Nombre del jugador 2" /></label>
       <p class="hint">Mantené apretado para lanzar. Después tocá muchas veces para girar más fuerte.<br/>
-        En la compu: ${esc(PLAYER1_NAME)} usa <kbd>Espacio</kbd> y el jugador 2 usa <kbd>L</kbd>.<br/><small>v0.4.0</small></p>
+        En la compu: ${esc(PLAYER1_NAME)} usa <kbd>Espacio</kbd> y el jugador 2 usa <kbd>L</kbd>.<br/><small>v0.4.1</small></p>
     </section>`);
   root.appendChild(el);
   const nameInput = el.querySelector<HTMLInputElement>('.p2-name input')!;

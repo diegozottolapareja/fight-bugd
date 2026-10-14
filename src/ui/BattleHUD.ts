@@ -74,9 +74,6 @@ export class BattleHUD {
       this.el.appendChild(html(`<p class="hint keys-hint">${esc(labels[0])}: <kbd>Espacio</kbd> &nbsp; ${esc(labels[1])}: <kbd>L</kbd></p>`));
     }
 
-    const quit = html<HTMLButtonElement>(`<button class="icon-btn quit" aria-label="Salir al menú">✕ Salir</button>`);
-    quit.addEventListener('click', () => opts.onQuit());
-    this.el.appendChild(quit);
     root.appendChild(this.el);
     this.update();
   }

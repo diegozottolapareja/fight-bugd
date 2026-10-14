@@ -176,7 +176,6 @@ body[data-phase='BATTLE'] .top-bar .lbl, body[data-phase='READY'] .top-bar .lbl 
 .spin-btn.wait { filter: grayscale(1) brightness(0.7); }
 .launch .spin-btn { position: static; transform: none; }
 .launch .spin-btn.pressed { transform: translateY(8px); }
-.quit { position: absolute; left: calc(10px + var(--sl)); bottom: calc(14px + var(--sb)); pointer-events: auto !important; }
 .keys-hint { position: absolute; bottom: calc(14px + var(--sb)); left: 50%; transform: translateX(-50%); white-space: nowrap; }
 
 /* Resultado */
@@ -244,3 +243,41 @@ body[data-phase='BATTLE'] .top-bar .lbl, body[data-phase='READY'] .top-bar .lbl 
 .hud .spin-btn.side.left { left: calc(16px + var(--sl, 0px)); right: auto; }
 .hud .spin-btn.side.right { right: calc(16px + var(--sr, 0px)); left: auto; }
 .hud .spin-btn.side.pressed { transform: translateY(8px); }
+
+/* Celular acostado: los tamaños en vw se disparan, así que todo se mide con la altura. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .screen { padding-top: calc(8px + var(--st)); padding-bottom: calc(8px + var(--sb)); }
+  body[data-phase='BATTLE'] .top-bar, body[data-phase='READY'] .top-bar {
+    top: calc(8px + var(--st)); bottom: auto; left: 50%; right: auto; transform: translateX(-50%);
+  }
+  .icon-btn { font-size: 0.8rem; padding: 0.4em 0.7em; }
+  .big-btn { font-size: clamp(1rem, 6vh, 1.4rem); padding: 0.55em 1.2em; min-width: 7em; }
+  .big-btn.small { font-size: clamp(0.8rem, 4.6vh, 1rem); padding: 0.5em 1em; }
+  .menu { gap: 1.8vh; }
+  .title { font-size: clamp(2rem, 13vh, 4.4rem); }
+  .menu-buttons { gap: 12px; }
+  .hint { font-size: 0.75rem; line-height: 1.3; max-width: 60em; }
+  .p2-name, .p2-name input { font-size: 0.85rem; }
+  .p2-name input { padding: 5px 10px; width: 8em; }
+  .result { gap: 1.6vh; }
+  .result .vtype { font-size: clamp(0.9rem, 5vh, 1.3rem); }
+  .result .winner { font-size: clamp(1.8rem, 14vh, 3.4rem); }
+  .result img { width: clamp(60px, 20vh, 110px); }
+  .verdict { font-size: clamp(1.8rem, 13vh, 3.2rem); }
+  .result-buttons { gap: 10px; }
+  .vs { font-size: clamp(1rem, 7vh, 1.8rem); }
+  .count { font-size: clamp(3rem, 30vh, 8rem); }
+  .count.go { font-size: clamp(2.2rem, 18vh, 5rem); }
+  .launch-who { font-size: clamp(1.1rem, 7vh, 1.7rem); }
+  .announce { font-size: clamp(1.2rem, 9vh, 2.2rem); }
+  .select { gap: 6px; }
+  .select-header h2 { font-size: clamp(1.1rem, 8vh, 1.6rem); }
+  .cards { gap: 6px; }
+  .card { padding: 4px 5px 6px; border-radius: 12px; border-width: 2px; }
+  .card img { width: clamp(36px, 12vh, 56px); }
+  .card .name { font-size: clamp(0.8rem, 4.4vh, 1.05rem); }
+  .card .stats { margin-top: 2px; }
+  .select-footer { padding-bottom: 0; gap: 10px; }
+  .select > .hint { display: none; }
+  .hud .spin-btn.side { width: clamp(84px, 26vh, 124px); font-size: clamp(1rem, 4.4vh, 1.5rem); bottom: calc(10px + var(--sb)); }
+}
