@@ -86,7 +86,11 @@ body[data-phase='BATTLE'] .top-bar .lbl, body[data-phase='READY'] .top-bar .lbl 
 .card .spec { font-size: 0.85rem; opacity: 0.85; }
 .card .stats { width: 100%; display: grid; grid-template-columns: auto 1fr; gap: 2px 6px; font-size: 0.7rem; margin-top: 4px; text-align: left; }
 .stat-bar { height: 8px; align-self: center; border-radius: 4px; background: rgba(255, 255, 255, 0.15); overflow: hidden; }
-.stat-bar i { display: block; height: 100%; background: var(--sun); }
+.stat-bar i { display: block; height: 100%; background: var(--sun); border-radius: 4px; }
+.stat-bar i.low { background: #ff4b3e; }
+.stat-bar i.mid { background: #ffc93c; }
+.stat-bar i.high { background: #3ddc5a; }
+.stat-label .short { display: none; font-weight: 900; }
 .card.active { border-color: var(--sun); transform: translateY(-4px) scale(1.03); background: linear-gradient(180deg, rgba(255, 201, 60, 0.28), rgba(255, 201, 60, 0.06)); }
 .card .taken { position: absolute; top: 6px; left: 6px; }
 .select-footer { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; align-items: center; padding-bottom: 8px; }
@@ -196,7 +200,11 @@ body[data-phase='BATTLE'] .top-bar .lbl, body[data-phase='READY'] .top-bar .lbl 
 @media (orientation: landscape) and (max-height: 520px) {
   .cards { grid-template-columns: repeat(6, minmax(0, 1fr)); width: min(100%, 1000px); }
   .card img { width: min(100%, 70px); }
-  .card .stats { display: none; }
+  .card .spec { display: none; }
+  .card .stats { font-size: 0.55rem; gap: 1px 4px; }
+  .stat-bar { height: 6px; }
+  .stat-label .full { display: none; }
+  .stat-label .short { display: inline; }
   .hud .panel { width: min(32vw, 300px); padding: 4px 8px 6px; gap: 3px; }
   .hud .pname { font-size: 1rem; }
   .meter { height: 14px; }

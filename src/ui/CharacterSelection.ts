@@ -11,12 +11,15 @@ export interface SelectionOptions {
   onBack(): void;
 }
 
-const STAT_ROWS: Array<[keyof CharacterStats, string]> = [
-  ['attack', 'Fuerza'],
-  ['speed', 'Velocidad'],
-  ['stability', 'Equilibrio'],
-  ['endurance', 'Aguante'],
+const STAT_ROWS: Array<[keyof CharacterStats, string, string]> = [
+  ['attack', 'Fuerza', 'FUE'],
+  ['speed', 'Velocidad', 'VEL'],
+  ['stability', 'Equilibrio', 'EQU'],
+  ['endurance', 'Aguante', 'AGU'],
 ];
+
+/** Rojo = bajo, amarillo = medio, verde = alto. */
+const level = (v: number) => (v >= 8 ? 'high' : v >= 5 ? 'mid' : 'low');
 
 /** Selección: primero J1, después J2 (o la CPU elige sola). */
 export function showCharacterSelection(root: HTMLElement, opts: SelectionOptions): () => void {
@@ -39,7 +42,10 @@ export function showCharacterSelection(root: HTMLElement, opts: SelectionOptions
   const title = el.querySelector<HTMLElement>('h2')!;
 
   const cardEls = CHARACTERS.map((c, i) => {
-    const stats = STAT_ROWS.map(([k, label]) => `<span>${label}</span><span class="stat-bar"><i style="width:${c.stats[k] * 10}%"></i></span>`).join('');
+    const stats = STAT_ROWS.map(
+      ([k, label, short]) =>
+        `<span class="stat-label"><b class="full">${label}</b><b class="short">${short}</b></span><span class="stat-bar" role="img" aria-label="${label}: ${c.stats[k]} de 10"><i class="${level(c.stats[k])}" style="width:${c.stats[k] * 10}%"></i></span>`,
+    ).join('');
     const card = html<HTMLButtonElement>(`
       <button class="card" role="option">
         <img src="${c.visual.sprite}" alt="" draggable="false" />
