@@ -69,3 +69,56 @@ if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
       .catch(() => undefined);
   });
 }
+
+// Banner para instalar la app (sólo en el navegador, se puede cerrar y no vuelve a molestar).
+const INSTALL_KEY = 'bbf-install-dismissed';
+const standalone =
+  window.matchMedia('(display-mode: standalone)').matches || (navigator as Navigator & { standalone?: boolean }).standalone === true;
+const dismissed = (() => {
+  try {
+    return localStorage.getItem(INSTALL_KEY) === '1';
+  } catch {
+    return false;
+  }
+})();
+
+function showInstallBanner(onInstall: (() => void) | null): void {
+  if (standalone || dismissed || document.querySelector('.install-banner')) return;
+  const bar = document.createElement('div');
+  bar.className = 'install-banner';
+  const text = document.createElement('span');
+  text.textContent = onInstall ? '📲 Instalá la app en tu teléfono' : '📲 Para instalarla: tocá Compartir y "Agregar a inicio"';
+  bar.appendChild(text);
+  if (onInstall) {
+    const go = document.createElement('button');
+    go.className = 'install-go';
+    go.textContent = 'Instalar';
+    go.addEventListener('click', () => {
+      onInstall();
+      bar.remove();
+    });
+    bar.appendChild(go);
+  }
+  const close = document.createElement('button');
+  close.className = 'install-close';
+  close.setAttribute('aria-label', 'Cerrar');
+  close.textContent = '✕';
+  close.addEventListener('click', () => {
+    bar.remove();
+    try {
+      localStorage.setItem(INSTALL_KEY, '1');
+    } catch {
+      /* sin almacenamiento: vuelve a aparecer la próxima vez */
+    }
+  });
+  bar.appendChild(close);
+  document.body.appendChild(bar);
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  const evt = e as Event & { prompt(): Promise<void> };
+  showInstallBanner(() => void evt.prompt());
+});
+// iPhone/iPad no tienen el aviso automático: se explica a mano.
+if (/iphone|ipad|ipod/i.test(navigator.userAgent)) window.addEventListener('load', () => showInstallBanner(null));

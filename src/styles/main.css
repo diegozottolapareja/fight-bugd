@@ -90,7 +90,14 @@ body[data-phase='BATTLE'] .top-bar .lbl, body[data-phase='READY'] .top-bar .lbl 
 .stat-bar i.low { background: #ff4b3e; }
 .stat-bar i.mid { background: #ffc93c; }
 .stat-bar i.high { background: #3ddc5a; }
-.stat-label .short { display: none; font-weight: 900; }
+.stat-label .full { display: none; }
+.stat-label .short { font-weight: 900; }
+.card .stats { grid-template-columns: 2.4em 1fr; }
+@media (min-width: 760px) and (min-height: 521px) {
+  .stat-label .full { display: inline; }
+  .stat-label .short { display: none; }
+  .card .stats { grid-template-columns: auto 1fr; }
+}
 .card.active { border-color: var(--sun); transform: translateY(-4px) scale(1.03); background: linear-gradient(180deg, rgba(255, 201, 60, 0.28), rgba(255, 201, 60, 0.06)); }
 .card .taken { position: absolute; top: 6px; left: 6px; }
 .select-footer { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; align-items: center; padding-bottom: 8px; }
@@ -202,8 +209,6 @@ body[data-phase='BATTLE'] .top-bar .lbl, body[data-phase='READY'] .top-bar .lbl 
   .card .spec { display: none; }
   .card .stats { font-size: 0.55rem; gap: 1px 4px; }
   .stat-bar { height: 6px; }
-  .stat-label .full { display: none; }
-  .stat-label .short { display: inline; }
   .hud .panel { width: min(32vw, 300px); padding: 4px 8px 6px; gap: 3px; }
   .hud .pname { font-size: 1rem; }
   .meter { height: 14px; }
@@ -280,4 +285,36 @@ body[data-phase='BATTLE'] .top-bar .lbl, body[data-phase='READY'] .top-bar .lbl 
   .select-footer { padding-bottom: 0; gap: 10px; }
   .select > .hint { display: none; }
   .hud .spin-btn.side { width: clamp(84px, 26vh, 124px); font-size: clamp(1rem, 4.4vh, 1.5rem); bottom: calc(10px + var(--sb)); }
+}
+
+/* Celular vertical */
+@media (max-aspect-ratio: 1/1) {
+  .select { padding-top: calc(64px + var(--st)); }
+  .select-header { margin-top: 0; }
+  .hud .row { gap: 5px; }
+  .hud .badge { font-size: 0.85rem; padding: 0.2em 0.5em; min-width: 0; max-width: none; }
+  .hud .badge.p1 { padding-right: 0.7em; }
+  .hud .badge.p2 { padding-left: 0.7em; }
+  .hud .pname { font-size: 0.95rem; }
+}
+
+/* Banner de instalación (sólo en el menú principal) */
+.install-banner {
+  position: fixed; z-index: 90; left: 50%; transform: translateX(-50%); bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  width: min(92vw, 440px); display: flex; align-items: center; gap: 10px; padding: 8px 8px 8px 14px; border-radius: 16px;
+  background: rgba(11, 18, 64, 0.92); border: 2px solid var(--sun); color: var(--cream); font: 900 0.85rem 'Nunito', sans-serif;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+}
+.install-banner span { flex: 1; line-height: 1.25; }
+.install-banner button { border: 0; border-radius: 999px; font: 900 0.85rem 'Nunito', sans-serif; cursor: pointer; }
+.install-go { background: var(--sun); color: var(--ink); padding: 8px 14px; }
+.install-close { background: transparent; color: var(--cream); padding: 6px 10px; font-size: 1rem !important; }
+body:not([data-phase='MAIN_MENU']) .install-banner { display: none; }
+body:has(.install-banner) .update-banner { bottom: calc(80px + env(safe-area-inset-bottom, 0px)); }
+
+/* 2 jugadores en vertical: el sonido va arriba de los dos botones, al medio */
+@media (max-aspect-ratio: 1/1) {
+  body[data-phase='BATTLE']:has(.spin-btn.side) .top-bar, body[data-phase='READY']:has(.spin-btn.side) .top-bar {
+    left: 50%; transform: translateX(-50%); bottom: calc(196px + var(--sb));
+  }
 }
