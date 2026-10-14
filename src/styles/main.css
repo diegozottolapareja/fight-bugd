@@ -238,3 +238,9 @@ body[data-phase='BATTLE'] .top-bar .lbl, body[data-phase='READY'] .top-bar .lbl 
 .verdict.lose { color: #ff5a4e; animation-name: verdict-drop; }
 @keyframes verdict-pop { from { transform: scale(0.2) rotate(-8deg); opacity: 0; } to { transform: none; opacity: 1; } }
 @keyframes verdict-drop { 0% { transform: translateY(-60px); opacity: 0; } 60% { transform: translateY(8px); opacity: 1; } 75% { transform: translateX(-8px); } 90% { transform: translateX(8px); } 100% { transform: none; opacity: 1; } }
+
+/* 2 jugadores en el celular: un botón por jugador, uno a cada lado */
+.hud .spin-btn.side { transform: none; bottom: calc(18px + var(--sb, 0px)); width: clamp(110px, 34vh, 170px); }
+.hud .spin-btn.side.left { left: calc(16px + var(--sl, 0px)); right: auto; }
+.hud .spin-btn.side.right { right: calc(16px + var(--sr, 0px)); left: auto; }
+.hud .spin-btn.side.pressed { transform: translateY(8px); }

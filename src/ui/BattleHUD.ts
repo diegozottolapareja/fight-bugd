@@ -59,7 +59,14 @@ export class BattleHUD {
       this.el.appendChild(this.turnBanner);
     }
 
-    if (opts.touch || mode === 'cpu') {
+    if (opts.touch && mode === 'versus') {
+      // 2 jugadores en el celular: un botón a cada lado, se pueden apretar a la vez.
+      ([0, 1] as const).forEach((p) => {
+        const btn = html<HTMLButtonElement>(`<button class="spin-btn side p${p + 1} ${p === 0 ? 'left' : 'right'}" aria-label="Girar ${esc(labels[p])}">¡GIRA!<small>${esc(labels[p])}</small></button>`);
+        this.el.appendChild(btn);
+        this.unbind.push(bindPressButton(btn, () => opts.onPress(p)));
+      });
+    } else if (opts.touch || mode === 'cpu') {
       this.spinBtn = html<HTMLButtonElement>(`<button class="spin-btn p1" aria-label="Girar">¡GIRA!<small>${esc(labels[0])}</small></button>`);
       this.el.appendChild(this.spinBtn);
       this.unbind.push(bindPressButton(this.spinBtn, () => opts.onPress(battle.turns ? battle.turns.activePlayer : 0)));

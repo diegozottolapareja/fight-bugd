@@ -149,7 +149,8 @@ export class Game {
     const forced = params.get('turnos');
     if (forced === '1') return 'turns';
     if (forced === '0') return 'versus';
-    return this.touch ? 'turns' : 'versus';
+    // En el celular, cada jugador tiene su propio botón (multitáctil); ?turnos=1 vuelve al modo por turnos.
+    return 'versus';
   }
 
   private async startMatch(): Promise<void> {
