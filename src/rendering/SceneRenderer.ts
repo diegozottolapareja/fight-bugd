@@ -34,6 +34,7 @@ interface SpinnerView {
   swirl: THREE.Mesh;
   hit: number;
   fall: number;
+  pivot: number;
   burstDone: boolean;
 }
 
@@ -239,7 +240,7 @@ export class SceneRenderer {
       swirl.position.y = -def.visual.radius * 0.5;
       model.spin.add(swirl);
       this.scene.add(model.root, marker, label, aura.mesh, trail.group);
-      this.views.push({ def, model, marker, label, aura, trail, ki, kiFrames, kiOn: 0, kiPop: 0, ghosts, hist: [], swirl, hit: 0, fall: 0, burstDone: false });
+      this.views.push({ def, model, marker, label, aura, trail, ki, kiFrames, kiOn: 0, kiPop: 0, ghosts, hist: [], swirl, hit: 0, fall: 0, pivot: 0, burstDone: false });
     });
   }
 
@@ -313,15 +314,22 @@ export class SceneRenderer {
         const sprite = v.model.sprite;
         const sm = sprite.material as THREE.SpriteMaterial;
         sm.rotation = Math.sin(s.precess) * s.tilt * 1.3 + v.fall * 1.5 * (i === 0 ? 1 : -1);
-        sprite.scale.set(S * (1 + 0.2 * k), S * (1 - 0.16 * k), 1);
-        sprite.position.y = v.model.spriteBaseY - v.fall * S * 0.3;
+        // Pivoteo: cuanto más rápido gira el trompo, más rápido "se da vuelta" el monstruito
+        // sobre su lugar (se angosta y se ensancha), se balancea y rebota.
+        const alive = lost || v.burstDone ? 0 : s.energyRatio;
+        v.pivot += dt * (1.5 + 20 * alive * alive);
+        const turn = THREE.MathUtils.lerp(1, Math.cos(v.pivot), 0.65 * alive);
+        const wobble = Math.sin(v.pivot * 2) * 0.22 * alive;
+        const bob = Math.abs(Math.sin(v.pivot)) * S * 0.07 * alive;
+        sprite.scale.set(S * (1 + 0.2 * k) * turn, S * (1 - 0.16 * k) * (1 + 0.06 * alive * Math.abs(Math.sin(v.pivot))), 1);
+        sprite.position.y = v.model.spriteBaseY - v.fall * S * 0.3 + bob;
         sprite.renderOrder = 20 + z;
 
         // Sensación de velocidad: inclinación, vibración, remolino y estela.
         const vel = s.velocity;
         const moveSpeed = Math.hypot(vel.x, vel.z);
         const spinK = lost || v.burstDone ? 0 : s.energyRatio;
-        sm.rotation += THREE.MathUtils.clamp(-vel.x * 0.06, -0.35, 0.35) + Math.sin(t * 90) * 0.05 * spinK;
+        sm.rotation += wobble + THREE.MathUtils.clamp(-vel.x * 0.06, -0.35, 0.35) + Math.sin(t * 90) * 0.05 * spinK;
         (v.swirl.material as THREE.MeshBasicMaterial).opacity = 0.15 + 0.7 * spinK;
         v.hist.unshift(new THREE.Vector3(x, y + sprite.position.y, z));
         if (v.hist.length > 13) v.hist.pop();

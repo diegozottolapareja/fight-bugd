@@ -211,3 +211,12 @@ body[data-phase='BATTLE'] .top-bar .lbl, body[data-phase='READY'] .top-bar .lbl 
   .launch .spin-btn { width: clamp(90px, 28vh, 140px); }
   .title { font-size: clamp(2.6rem, 16vh, 6rem); }
 }
+
+/* Aviso de nueva versión */
+.update-banner {
+  position: fixed; z-index: 100; left: 50%; transform: translateX(-50%);
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  padding: 12px 20px; border: 0; border-radius: 999px;
+  background: #ffd23f; color: #14205a; font: 900 16px 'Nunito', sans-serif;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45); cursor: pointer;
+}

@@ -1,6 +1,9 @@
 // Primero la red (así cada deploy nuevo llega enseguida); sin internet, usa lo guardado.
 const CACHE = 'bbf-v3';
-self.addEventListener('install', () => self.skipWaiting());
+// __BUILD_ID__
+self.addEventListener('message', (e) => {
+  if (e.data === 'SKIP_WAITING') self.skipWaiting();
+});
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim()),

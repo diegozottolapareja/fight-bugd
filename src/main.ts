@@ -30,6 +30,42 @@ async function boot(): Promise<void> {
 }
 void boot();
 
+function showUpdateBanner(reg: ServiceWorkerRegistration): void {
+  if (document.querySelector('.update-banner')) return;
+  const b = document.createElement('button');
+  b.className = 'update-banner';
+  b.textContent = '🔄 Nueva versión — Actualizar';
+  b.addEventListener('click', () => {
+    b.disabled = true;
+    b.textContent = 'Actualizando…';
+    reg.waiting?.postMessage('SKIP_WAITING');
+    setTimeout(() => location.reload(), 3000);
+  });
+  document.body.appendChild(b);
+}
+
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => undefined));
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('./sw.js')
+      .then((reg) => {
+        const hadController = !!navigator.serviceWorker.controller;
+        const check = () => {
+          if (reg.waiting && navigator.serviceWorker.controller) showUpdateBanner(reg);
+        };
+        check();
+        reg.addEventListener('updatefound', () => {
+          reg.installing?.addEventListener('statechange', check);
+        });
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (hadController) location.reload();
+        });
+        const poll = () => void reg.update().catch(() => undefined);
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'visible') poll();
+        });
+        setInterval(poll, 60_000);
+      })
+      .catch(() => undefined);
+  });
 }
