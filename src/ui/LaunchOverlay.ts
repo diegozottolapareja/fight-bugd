@@ -43,8 +43,19 @@ export function showLaunch(
     val.textContent = `${Math.round(power * 100)}%`;
   };
 
+  function advance(): void {
+    idx += 1;
+    if (idx >= o.launchers.length) o.onDone(powers);
+    else setup();
+  }
+
   function setup(): void {
     const l = cur();
+    if (l.cpu) {
+      powers[l.player] = 0.55 + Math.random() * 0.4;
+      advance();
+      return;
+    }
     locked = holding = false;
     power = 0;
     paint();
@@ -56,10 +67,6 @@ export function showLaunch(
       : o.touch
         ? 'Mantené apretado el botón y soltalo para lanzar'
         : `Mantené <kbd>${KEY_NAME[l.key]}</kbd> (o el botón) y soltalo para lanzar`;
-    if (l.cpu) {
-      start();
-      window.setTimeout(release, 400 + (0.55 + Math.random() * 0.4) * (LAUNCH_CONFIG.barPeriodMs / 2));
-    }
   }
 
   function start(): void {
@@ -87,9 +94,7 @@ export function showLaunch(
     text.textContent = power > 0.8 ? '¡Superlanzamiento!' : power > 0.5 ? '¡Buen lanzamiento!' : '¡Lanzado!';
     window.setTimeout(() => {
       if (ac.signal.aborted) return;
-      idx += 1;
-      if (idx >= o.launchers.length) o.onDone(powers);
-      else setup();
+      advance();
     }, 800);
   }
 
