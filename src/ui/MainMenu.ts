@@ -11,7 +11,7 @@ export function showMainMenu(root: HTMLElement, opts: { audio: AudioManager; onP
         <button class="big-btn secondary" data-p="2">2 JUGADORES</button>
       </div>
       <p class="hint">Mantené apretado para lanzar. Después tocá muchas veces para girar más fuerte.<br/>
-        En la compu: Jugador 1 usa <kbd>Espacio</kbd> y Jugador 2 usa <kbd>L</kbd>.</p>
+        En la compu: Jugador 1 usa <kbd>Espacio</kbd> y Jugador 2 usa <kbd>L</kbd>.<br/><small>v0.2.1</small></p>
     </section>`);
   root.appendChild(el);
   const buttons = [...el.querySelectorAll<HTMLButtonElement>('.menu-buttons button')];
