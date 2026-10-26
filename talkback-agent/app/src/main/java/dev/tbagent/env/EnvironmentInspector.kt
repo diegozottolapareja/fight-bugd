@@ -31,7 +31,7 @@ data class SetupStatus(
 object EnvironmentInspector {
 
     fun status(ctx: Context): SetupStatus {
-        val am = ctx.getSystemService(AccessibilityManager::class.java)
+        val am = ctx.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
         val enabled = am.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
         val enabledPackages = enabled.mapNotNull { it.resolveInfo?.serviceInfo?.packageName }
         val talkBack = enabledPackages.firstOrNull { TalkBackPackages.isTalkBack(it) }
